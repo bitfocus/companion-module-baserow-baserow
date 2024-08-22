@@ -1,19 +1,35 @@
+const { FILTER } = require('./filter')
+
 module.exports = function (self) {
 	self.setActionDefinitions({
-		sample_action: {
-			name: 'My First Action',
+		update: {
+			name: 'Update Field',
 			options: [
+				...FILTER,
 				{
-					id: 'num',
 					type: 'number',
-					label: 'Test',
-					default: 5,
-					min: 0,
-					max: 100,
+					id: 'resultNumber',
+					label: 'Number of the line to change',
+					width: 12,
+					default: 1,
+					minimum: 1,
 				},
+				{
+					type: 'textinput',
+					id: 'fieldName',
+					label: 'Field name',
+					width: 12,
+				},
+				{
+					type: 'textinput',
+					id: 'value',
+					label: 'Set to value',
+					width: 12,
+				},
+
 			],
 			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+				console.log('Hello world!', event.options.resultNumber)
 			},
 		},
 	})
