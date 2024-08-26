@@ -53,8 +53,10 @@ class ModuleInstance extends InstanceBase {
 		if (!this.config.api.endsWith("/")) {
 			this.config.api += "/"
 		}
+		console.log(`username:"${config.username}" password:"${config.password}"`)
 		if (config.username == "" || config.password == "")
 		{
+			console.log(`CREDENTIAL ERROR`)
 			this.updateStatus(InstanceStatus.BadConfig, 'Login credentials must not be empty')
 			return
 		}
@@ -99,6 +101,7 @@ class ModuleInstance extends InstanceBase {
 			this.ws.on('open', () => {
 				console.log('The connection is made')
 				this.updateVariableDefinitions()
+				this.getDatabases()
 				const keepAliveInterval = setInterval(() => {
 						if (this.ws.readyState === WebSocket.OPEN) {
 								//this.ws.send(JSON.stringify({ type: 'ping' }));
@@ -112,6 +115,14 @@ class ModuleInstance extends InstanceBase {
 
 			this.ws.on('message', this.handleWSMessage())
 		}
+	}
+
+	getDatabases() {
+		this.baserowGet('api/database/databases/')
+		  .then( (data) => {
+			console.log("WORKSPACES:",JSON.stringify(data))
+		  })
+
 	}
 
 	queryParams() {
@@ -189,6 +200,17 @@ class ModuleInstance extends InstanceBase {
 			}
 		}
 	}
+
+	async baserowGet(path) {
+		return fetch(this.config.api + path, {
+			method: 'GET',
+			headers: {
+					'Content-Type': 'application/json',
+					'Authorization': this.auth
+			}})
+			.then(response => response.json())
+	}
+
 	// Return config fields for web config
 	getConfigFields() {
 		return GetConfigFields(this)

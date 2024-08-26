@@ -5,6 +5,14 @@ module.exports = function (self) {
 		update: {
 			name: 'Update Field',
 			options: [
+				{
+					type: 'textinput',
+					id: 'table',
+					label: 'Table ID',
+					width: 12,
+					tooltip: 'Numerical table ID of the table that shall be updated',
+					default: '',
+				},
 				...FILTER,
 				{
 					type: 'number',

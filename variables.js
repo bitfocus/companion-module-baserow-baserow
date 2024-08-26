@@ -83,14 +83,16 @@ function UpdateTableRow(self, table, row, rowNr = 1) {
 
 async function getTableFieldNames(self, table) {
 	var fieldNames = []
-	await fetch(self.config.api + 'api/database/fields/table/' + table + '/', {
+	 
+	/*await fetch(self.config.api + 'api/database/fields/table/' + table + '/', {
         method: 'GET',
         headers: {
                 'Content-Type': 'application/json',
                 'Authorization': self.auth
         }})
-        .then(response => response.json())
-        .then(data => {
+        .then(response => response.json()) */
+    await self.baserowGet('api/database/fields/table/' + table + '/')
+			.then(data => {
 			//console.log("FIELDNAMES inner", JSON.stringify(data, null, 4))
 			data.forEach( (field) => {
 				fieldNames.push({id:"field_" + field.id, name: field.name})

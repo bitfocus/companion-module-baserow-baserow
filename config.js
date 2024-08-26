@@ -9,21 +9,21 @@ module.exports = function (self) {
             label: 'URL of the API endpoint',
             width: 12,
             regex: Regex.URL,
-            default: 'https://api.baserow.com/'
+            default: 'https://api.baserow.io/'
         },
         {
             type: 'textinput',
             id: 'username',
             label: 'Username',
+	    default: '',
             width: 6,
-            isVisible: (options, data) => { return options.auth=='pw'},
         },
         {
             type: 'textinput',
             id: 'password',
             label: 'Password',
+	    default: '',
             width: 6,
-            isVisible: (options, data) => { return options.auth=='pw'},
         },
         {
             type: 'textinput',
