@@ -94,7 +94,7 @@ class ModuleInstance extends InstanceBase {
 			this.ws = new WebSocket(this.config.websocket + 'ws/core/?jwt_token=' + token)
 
 			this.ws.on('open', () => {
-				self.log('debug', 'The connection is made')
+				this.log('debug', 'The connection is made')
 				this.updateVariableDefinitions()
 				const keepAliveInterval = setInterval(() => {
 						if (this.ws.readyState === WebSocket.OPEN) {
