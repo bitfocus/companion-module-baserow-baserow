@@ -3,10 +3,10 @@
 	"name": "companion-module-baserow",
 	"shortname": "baserow",
 	"description": "Retrieve and manipulate data using baserow tables.",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/bitfocus/companion-module-baserow.git",
-	"bugs": "https://github.com/bitfocus/companion-module-baserow/issues",
+	"repository": "git+https://github.com/bitfocus/companion-module-baserow-baserow.git",
+	"bugs": "https://github.com/bitfocus/companion-module-baserow-baserow/issues",
 	"maintainers": [
 		{
 			"name": "Jens Frank",

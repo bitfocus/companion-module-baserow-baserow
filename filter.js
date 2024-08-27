@@ -14,22 +14,6 @@ const FILTER = [
             { id: 'text', label: 'Advanced text (string) filter'},
         ],
     },
-    /* {
-        id: 'filler_1',
-        type: 'static-text',
-        label: '',
-        width: 1,
-        value: '',
-        isVisible: (options) => options.usefilter != 'none',
-    },
-    {
-        id: 'filter_info',
-        type: 'static-text',
-        label: 'Performance warning',
-        width: 11,
-        value: 'If filters are enabled, any update of the baserow table(s) will cause a full reload of the table. With big table, this can impact performance.',
-        isVisible: (options) => options.usefilter != 'none',
-    }, */
     // ---------------- JSON filter
     {
         id: 'filler_2',

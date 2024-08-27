@@ -44,7 +44,6 @@ class ModuleInstance extends InstanceBase {
 	}
 
 	async configUpdated(config) {
-		console.log("configUpdated")
 		this.config = config
 		if (!config.api.startsWith('http')) {
 			this.updateStatus(InstanceStatus.BadConfig, 'API endpoint address must be a URL')
@@ -53,10 +52,9 @@ class ModuleInstance extends InstanceBase {
 		if (!this.config.api.endsWith("/")) {
 			this.config.api += "/"
 		}
-		console.log(`username:"${config.username}" password:"${config.password}"`)
+
 		if (config.username == "" || config.password == "")
 		{
-			console.log(`CREDENTIAL ERROR`)
 			this.updateStatus(InstanceStatus.BadConfig, 'Login credentials must not be empty')
 			return
 		}
@@ -72,7 +70,6 @@ class ModuleInstance extends InstanceBase {
 	}
 
 	async connect() {
-		console.log("connect()")
 		const url = this.config.api + "api/user/token-auth/"
 		let token = ""
 		this.updateStatus(InstanceStatus.Connecting)
@@ -85,23 +82,20 @@ class ModuleInstance extends InstanceBase {
 		})
 		.then(response => response.json()) // Parse the JSON from the response
 		.then(data => {
-			console.log("LOGIN", JSON.stringify(data))
 			this.auth = `JWT ${data.token}`
 			token = data.token
 			this.updateStatus(InstanceStatus.Ok)
 		})
 		.catch(error => {
-			console.error('Error:', error)
+			this.log('error', error)
 			this.updateStatus(InstanceStatus.Disconnected, JSON.stringify(error))
 		})
-		console.log("AUTH", this.auth)
 		if (this.auth != "") {
 			this.ws = new WebSocket(this.config.websocket + 'ws/core/?jwt_token=' + token)
 
 			this.ws.on('open', () => {
-				console.log('The connection is made')
+				self.log('debug', 'The connection is made')
 				this.updateVariableDefinitions()
-				this.getDatabases()
 				const keepAliveInterval = setInterval(() => {
 						if (this.ws.readyState === WebSocket.OPEN) {
 								//this.ws.send(JSON.stringify({ type: 'ping' }));
@@ -117,74 +111,65 @@ class ModuleInstance extends InstanceBase {
 		}
 	}
 
-	getDatabases() {
-		this.baserowGet('api/database/databases/')
-		  .then( (data) => {
-			console.log("WORKSPACES:",JSON.stringify(data))
-		  })
-
-	}
-
-	queryParams() {
-		console.log("QUERYPARAMS:", JSON.stringify(this.config))
+	queryParams(options) {
 		var params = {
 			user_field_names: 'true',
-			size: this.config.result_limit,
+			size: options.result_limit,
 		}
-		if (this.config.usefilter == 'search') {
-			params['search'] = this.config.search
-		} else if (this.config.usefilter == 'json') {
-			params['filter'] = this.config.json_filter
-		} else if (this.config.usefilter == 'boolean') {
+		if (options.usefilter == 'search') {
+			params['search'] = options.search
+		} else if (options.usefilter == 'json') {
+			params['filter'] = options.json_filter
+		} else if (options.usefilter == 'boolean') {
 			params['filters'] = JSON.stringify({
 				filter_type: "AND",
 				filters: [{
 					type: "boolean",
-					field: String(this.config.boolean_field),
-					value: String(this.config.boolean_value)
+					field: String(options.boolean_field),
+					value: String(options.boolean_value)
 				}],
 				groups: []
 			})
-		} else if (this.config.usefilter == 'range') {
+		} else if (options.usefilter == 'range') {
 			params['filters'] = JSON.stringify({
 				filter_type: "AND",
 				filters: [
 					{
 						type: "higher_than_or_equal",
-						field: String(this.config.range_field),
-						value: String(this.config.range_from)
+						field: String(options.range_field),
+						value: String(options.range_from)
 					}, {
 						type: "lower_than_or_equal",
-						field: String(this.config.range_field),
-						value: String(this.config.range_to),
+						field: String(options.range_field),
+						value: String(options.range_to),
 					}
 				],
 				groups: []
 			})
-		} else if (this.config.usefilter == 'text') {
+		} else if (options.usefilter == 'text') {
 			params['filters'] = JSON.stringify({
 				filter_type: "AND",
 				filters: [{
-					type: String(this.config.text_operator),
-					field: String(this.config.text_field),
-					value: String(this.config.text_parameter)
+					type: String(options.text_operator),
+					field: String(options.text_field),
+					value: String(options.text_parameter)
 				}],
 				groups: []
 			})
 		}
 
-		if (this.config.order_by != '') {
-			params['order_by'] = this.config.order_by
+		if (options.order_by != undefined && options.order_by != '') {
+			params['order_by'] = options.order_by
 		}
 		var searchParams = new URLSearchParams(params)
-		console.log("QUERY STRING", searchParams.toString())
+
 		return searchParams.toString()
 	}
 
 	handleWSMessage() {
 		return async (data) => {
 			data = JSON.parse(String(data))
-			console.log(data)
+
 			if (data.type == undefined) {
 				return
 			}
@@ -209,6 +194,17 @@ class ModuleInstance extends InstanceBase {
 					'Authorization': this.auth
 			}})
 			.then(response => response.json())
+	}
+
+	async baserowPatch(path, data) {
+		return fetch(this.config.api + path, {
+			method: 'PATCH',
+			headers: {
+					'Content-Type': 'application/json',
+					'Authorization': this.auth
+			},
+			body: JSON.stringify(data),
+		}).then(response => response.json())
 	}
 
 	// Return config fields for web config

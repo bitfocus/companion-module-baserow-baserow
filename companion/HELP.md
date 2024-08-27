@@ -11,4 +11,4 @@ option empty. You will still be able to use actions and feedbacks.
 This module provides an action that updates a table cell. You can use filters to select the cell that shall be updated.
 
 ### Feedbacks
-You can use feedbacks to react on changes of table cells. Using filters, you can select the cell that you want to observe.
+This module does not provide feedbacks. You can use the internal "Variable"-feedbacks.
