@@ -1,5 +1,5 @@
 {
-	"name": "companion-module-baserow",
+	"name": "companion-module-baserow-baserow",
 	"version": "1.0.0",
 	"main": "main.js",
 	"scripts": {
@@ -12,7 +12,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-baserow-baserow.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.8.0",
+		"@companion-module/base": "~1.10.0",
 		"debounce-fn": "^6.0.0",
 		"ws": "^8.18.0"
 	},
