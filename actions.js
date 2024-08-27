@@ -35,17 +35,16 @@ module.exports = function (self) {
 					width: 12,
 					useVariables: true,
 				},
-
 			],
 			callback: async (event) => {
-				var path = 'api/database/rows/table/' + event.options.tableID + '/?' + self.queryParams(event.options)				
+				var path = 'api/database/rows/table/' + event.options.tableID + '/?' + self.queryParams(event.options)
 				var data = await self.baserowGet(path)
 
 				if (data.error != undefined) {
-					self.log("error", JSON.stringify(data, null, 3))
+					self.log('error', JSON.stringify(data, null, 3))
 				}
 
-				const row_id = data.results[event.options.result_limit-1].id
+				const row_id = data.results[event.options.result_limit - 1].id
 				var request = {}
 				request[event.options.fieldName] = await self.parseVariablesInString(event.options.value)
 				self.baserowPatch(`api/database/rows/table/${event.options.tableID}/${row_id}/?user_field_names=true`, request)
