@@ -31,7 +31,7 @@ class ModuleInstance extends InstanceBase {
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
-		// this.updateVariableDefinitions() // export variable definitions
+
 		this.auth = ""
 		this.state = {}
 		this.fieldNames = new Map()
@@ -180,7 +180,7 @@ class ModuleInstance extends InstanceBase {
 					this.updateTableRow(data.table_id, data.rows[0])
 					this.setVariableValues(this.state)
 				} else {
-					this.updateVariableDefinitions()
+					this.debounceUpdateVariableDefinitions()
 				}
 			}
 		}
@@ -220,8 +220,12 @@ class ModuleInstance extends InstanceBase {
 		UpdateFeedbacks(this)
 	}
 
-	updateVariableDefinitions() {
-		UpdateVariableDefinitions(this)
+	async updateVariableDefinitions() {
+		try {
+			await UpdateVariableDefinitions(this)
+		} catch (error) {
+			this.log("error", error)
+		}
 	}
 
 	updateTableRow(table, row) {

@@ -80,10 +80,14 @@ function variableName(tableName, rowId, fieldname) {
 	return `table_${tableName}_${rowId}_${fieldname}`.replace(/[^A-Za-z0-9_]/g, "_")
 }
 
-async function subscribeToTable(self, table) {
+function subscribeToTable(self, table) {
 	var message = {
 		page: "table",
 		table_id: String(table),
 	}
-	await self.ws.send(JSON.stringify(message))
+	try {
+		 self.ws.send(JSON.stringify(message), (error) => {self.log("error",error)})
+	} catch (error) {
+		self.log("error", error)
+	}
 }
